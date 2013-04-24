@@ -1,4 +1,4 @@
-{ "name": "webnotification"
+{ "name": "webinos-api-webNotification"
 , "publishConfig": { "tag": "alpha" }
 , "description": "WebNotification API"
 , "keywords": [ "webinos", "webnotification", "API"]
