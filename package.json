@@ -7,19 +7,17 @@
 , "author": "Andre Paul <andre.paul@fokus.fraunhofer.de>"
 , "repository":
   { "type": "git"
-  , "url": "http://dev.webinos.org/git/wp4.git"
+  , "url": "https://github.com/webinos/webinos-api-webNotification.git"
   }
 , "bugs":
   { "email": "andre.paul@fokus.fraunhofer.de"
   , "url": ""
   }
-, "directories": { "lib": "./lib"
-                 }
-, "main": "./lib/webnotification.js"
-, "dependencies":
-  {
+, "directories":
+  { "lib": "./lib"
   }
-, "bundleDependencies":
-  [
-  ]
+, "main": "./lib/webnotification.js"
+, "devDependencies":
+  { "webinos-jsonrpc2": "*"
+  }
 }
