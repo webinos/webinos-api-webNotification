@@ -2,7 +2,7 @@
 , "publishConfig": { "tag": "alpha" }
 , "description": "WebNotification API"
 , "keywords": [ "webinos", "webnotification", "API"]
-, "version": "0.0.1"
+, "version": "0.8.0"
 , "homepage": "http://webinos.org/"
 , "author": "Andre Paul <andre.paul@fokus.fraunhofer.de>"
 , "repository":
