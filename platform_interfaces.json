@@ -1,0 +1,5 @@
+{
+  "android": {
+    "WebNotificationManagerImpl": "org.webinos.android.impl.WebNotificationManagerImpl"
+  }
+}
