@@ -18,7 +18,7 @@ For developers that want to tweak the API, you should fork this repository and c
 
 	cd node_modules
 	git clone https://github.com/<your GitHub account>/webinos-api-webNotification.git
-	cd webinos-api-mediaplay
+	cd webinos-api-webNotification
 	npm install
 
 
