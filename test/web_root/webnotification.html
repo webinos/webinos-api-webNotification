@@ -10,26 +10,46 @@
 			if (typeof obj[myKey] == 'object') logObj(obj[myKey], name + "." + myKey);
 		}
 	}
+
+	function log(s){
+		if(!s){
+			document.getElementById("out").innerHTML = "";
+		}else{
+			document.getElementById("out").innerHTML += s+"<br/>";
+		}
+	}
 	
-	var webn;
+	var notifications=[];
 	
-	function sendNoti(){
+	function createNoti(){
 		webinos.discovery.findServices(new ServiceType('http://webinos.org/api/notifications'), 
                 {onFound: function (service) {
-                	 webn = service;
 	             	 service.bindService( 
                              {onBind: function (service) {
-								new service.WebNotification("Example Title", {body: "This is an example body.", iconUrl: "webnotification/purple-web.png"});
-     							service.onClick = function (){document.getElementById("out").innerHTML += "onClick<br>"};
-     							service.onClose = function (){document.getElementById("out").innerHTML += "onClose<br>"};
-     							service.onShow = function (){document.getElementById("out").innerHTML += "onShow<br>"};
-     							service.onError = function (err){document.getElementById("out").innerHTML += "onError: " + err + " @ service " + service.serviceAddress + "<br>"};         
+                             	if(!notifications.length) log("");
+								notifications.push(new service.Notification(document.getElementById("webntitle").value||"Example Title", {body: document.getElementById("webnbody").value||"This is an example body.", icon: "http://webinos.github.io/css/images/webinos_logo.png"}));
+     							service.onclick = function (){ log("onclick") };
+     							service.onclose = function (){ log("onclose") };
+     							service.onshow = function (){ log("onshow") };
+     							service.onerror = function (err){log("onerror: " + err + " @ service " + service.serviceAddress + "<br>")};         
                              }
                 	 	}
                 	 );
                 }
 			}
 		);
+	}
+
+	function closeNoti(){
+		if(notifications.length){
+			for (var i = notifications.length - 1; i >= 0; i--) {
+				notifications[i].close();
+			};
+			notifications=[];
+			log("all notifications closed.");
+		}else{
+			log("all notifications closed, already.");
+		}
 	}
 	
 	
@@ -39,11 +59,14 @@
 </head>
 <body>
 	Just press notify. When pressing each notification service available is searched using findService and executed. Since for Linux and Windows 
-	native code is needed it may be the case that notify not yet works on your device. For Android it should be fine since the native notification
+	native code is needed it may be the case that notify not yet works on your device. For Android and OSX 10.8 and later it should be fine since the native notification
 	service is used.
 	<br>
 	<br>
-	<input class="button" value="Notify" type="button" onclick='sendNoti()'>
+	Title:<input type="text" id="webntitle" value="Example Title" placeholder="Example Title"><br/>
+	Body:<input type="text" id="webnbody" value="This is an example body." placeholder="This is an example body."><br/>
+	<input class="button" value="create notification" type="button" onclick='createNoti()'>
+	<input class="button" value="close notifications" type="button" onclick='closeNoti()'>
 	<div id="out"></div>
 </body>
 </html>
