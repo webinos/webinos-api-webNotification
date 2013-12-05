@@ -23,12 +23,14 @@
 	 * @param obj Object containing displayName, api, etc.
 	 */
 	WebNotificationModule = function(obj) {
-		this.base = WebinosService;
-		this.base(obj);
-
+		WebinosService.call(this, obj);
 	};
-	
-	WebNotificationModule.prototype = new WebinosService;
+	// Inherit all functions from WebinosService
+	WebNotificationModule.prototype = Object.create(WebinosService.prototype);	
+	// The following allows the 'instanceof' to work properly
+	WebNotificationModule.prototype.constructor = WebNotificationModule;
+	// Register to the service discovery
+	_webinos.registerServiceConstructor("http://webinos.org/api/notifications", WebNotificationModule);
 	
 	/**
 	 * To bind the service.
