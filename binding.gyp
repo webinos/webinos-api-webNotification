@@ -25,9 +25,7 @@
 					},
 					'link_settings': {
 						'libraries': [
-						  '-lruntimeobject.lib',
-						  '-lshlwapi.lib',
-						  '-lwinspool.lib',
+						  '-lruntimeobject.lib'
 						],
 					},
                 }],
