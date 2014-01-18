@@ -11,7 +11,25 @@
             ],
             'conditions': [
                 ["OS==\"win\"", {
-                    # tdb
+                    'include_dirs': [
+                        "src/"
+                    ],
+					'sources': [
+                        "src/platform/win8/notifications.cpp",
+                        "src/platform/win8/StringReferenceWrapper.h",
+                        "src/platform/win8/win8Toast.h",
+                        "src/platform/win8/win8Toast.cpp"
+                    ],
+					'msvs_configuration_attributes': {
+						'CharacterSet': '1',  # Unicode
+					},
+					'link_settings': {
+						'libraries': [
+						  '-lruntimeobject.lib',
+						  '-lshlwapi.lib',
+						  '-lwinspool.lib',
+						],
+					},
                 }],
                 ["OS==\"mac\"", {
                     'include_dirs': [
