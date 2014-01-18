@@ -46,7 +46,7 @@ class win8Toast
 public:
 	win8Toast();
 	~win8Toast();
-	HRESULT DisplayToast(const wchar_t* title, const wchar_t* body);
+	bool DisplayToast(const wchar_t* title, const wchar_t* body, const wchar_t* icon);
 private:
 	HRESULT TryCreateShortcut();
 	HRESULT InstallShortcut(_In_z_ wchar_t *shortcutPath);
@@ -54,15 +54,18 @@ private:
 		_In_ ABI::Windows::UI::Notifications::IToastNotificationManagerStatics *toastManager,
 		_Outptr_ ABI::Windows::Data::Xml::Dom::IXmlDocument **xml,
 		const wchar_t* title,
-		const wchar_t* body
+		const wchar_t* body,
+		const wchar_t* icon
 		);
 	HRESULT CreateToast(
 		_In_ ABI::Windows::UI::Notifications::IToastNotificationManagerStatics *toastManager,
 		_In_ ABI::Windows::Data::Xml::Dom::IXmlDocument *xml
 		);
 	// Xml helpers
+	HRESULT DisableBranding(_In_ IXmlDocument *toastXml);
+	PCWSTR getXmlString(_In_ IXmlDocument *toastXml);
 	HRESULT SetImageSrc(
-		_In_z_ wchar_t *imagePath,
+		_In_z_ const wchar_t *imagePath,
 		_In_ ABI::Windows::Data::Xml::Dom::IXmlDocument *toastXml
 		);
 	HRESULT SetTextValues(

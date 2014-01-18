@@ -22,9 +22,8 @@ bool Notifications::show(string title, string body, string dir, string lang, str
 	// Convert to wchar
 	wstring titlews = wstring(title.begin(), title.end());
 	wstring bodyws = wstring(body.begin(), body.end());
+	wstring iconws = wstring(icon.begin(), icon.end());
 
 	win8Toast* toastService = new win8Toast();
-	toastService->DisplayToast(titlews.c_str(), bodyws.c_str());
-
-    return true;
+	return toastService->DisplayToast(titlews.c_str(), bodyws.c_str(), iconws.c_str());
 }
