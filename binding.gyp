@@ -15,7 +15,7 @@
                         "src/"
                     ],
 					'sources': [
-                        "src/platform/win8/notifications.cpp",
+                        "src/platform/win8/notificationsImpl.cpp",
                         "src/platform/win8/StringReferenceWrapper.h",
                         "src/platform/win8/win8Toast.h",
                         "src/platform/win8/win8Toast.cpp"

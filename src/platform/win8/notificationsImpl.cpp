@@ -19,7 +19,7 @@
 #include "win8Toast.h"
 
 bool Notifications::show(string title, string body, string dir, string lang, string tag, string icon) {
-	// Conver to wchar
+	// Convert to wchar
 	wstring titlews = wstring(title.begin(), title.end());
 	wstring bodyws = wstring(body.begin(), body.end());
 
