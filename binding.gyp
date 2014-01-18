@@ -14,21 +14,21 @@
                     'include_dirs': [
                         "src/"
                     ],
-					'sources': [
+                    'sources': [
                         "src/platform/win8/notificationsImpl.cpp",
                         "src/platform/win8/StringReferenceWrapper.h",
                         "src/platform/win8/win8Toast.h",
                         "src/platform/win8/win8Toast.cpp"
                     ],
-					'msvs_configuration_attributes': {
-						'CharacterSet': '1',  # Unicode
-					},
-					'link_settings': {
-						'libraries': [
-						  '-lruntimeobject.lib',
-						  '-lShlwapi.lib'
-						],
-					},
+                    'msvs_configuration_attributes': {
+                        'CharacterSet': '1',  # Unicode
+                    },
+                    'link_settings': {
+                        'libraries': [
+                          '-lruntimeobject.lib',
+                          '-lShlwapi.lib'
+                        ],
+                    },
                 }],
                 ["OS==\"mac\"", {
                     'include_dirs': [
