@@ -19,11 +19,17 @@
 
 win8Toast::win8Toast()
 {
+	RoInitialize(RO_INIT_SINGLETHREADED);
+	// Try to create the shortcut 
+	// that is required by winRT
+	// http://msdn.microsoft.com/en-us/library/windows/desktop/hh802762(v=vs.85).aspx
+	TryCreateShortcut();
 }
 
 
 win8Toast::~win8Toast()
 {
+	RoUninitialize();
 }
 
 HRESULT win8Toast::DisplayToast(const wchar_t* title, const wchar_t* body){
@@ -52,14 +58,14 @@ HRESULT win8Toast::CreateToastXml(_In_ IToastNotificationManagerStatics *toastMa
 	if (SUCCEEDED(hr))
 	{
 
-				const wchar_t* textValues[] = {
-					title,
-					body
-				};
+		const wchar_t* textValues[] = {
+			title,
+			body
+		};
 
-				UINT32 textLengths[] = { 6, 6, 6 };
+		UINT32 textLengths[] = { wcslen(title), wcslen(body) };
 
-				hr = SetTextValues(textValues, 3, textLengths, *inputXml);
+		hr = SetTextValues(textValues, 2, textLengths, *inputXml);
 	}
 	return hr;
 }
@@ -82,6 +88,93 @@ HRESULT win8Toast::CreateToast(_In_ IToastNotificationManagerStatics *toastManag
 				// Before showing, we could register event handlers like in
 				// http://code.msdn.microsoft.com/windowsdesktop/sending-toast-notifications-71e230a2/
 				hr = notifier->Show(toast.Get());
+			}
+		}
+	}
+	return hr;
+}
+
+// Create shortcut helpers
+
+
+// In order to display toasts, a desktop application must have a shortcut on the Start menu.
+// Also, an AppUserModelID must be set on that shortcut.
+// The shortcut should be created as part of the installer. The following code shows how to create
+// a shortcut and assign an AppUserModelID using Windows APIs. You must download and include the 
+// Windows API Code Pack for Microsoft .NET Framework for this code to function
+//
+// Included in this project is a wxs file that be used with the WiX toolkit
+// to make an installer that creates the necessary shortcut. One or the other should be used.
+
+HRESULT win8Toast::TryCreateShortcut()
+{
+	wchar_t shortcutPath[MAX_PATH];
+	DWORD charWritten = GetEnvironmentVariable(L"APPDATA", shortcutPath, MAX_PATH);
+	HRESULT hr = charWritten > 0 ? S_OK : E_INVALIDARG;
+
+	if (SUCCEEDED(hr))
+	{
+		errno_t concatError = wcscat_s(shortcutPath, ARRAYSIZE(shortcutPath), L"\\Microsoft\\Windows\\Start Menu\\Programs\\webinos.webNotifications.lnk");
+		hr = concatError == 0 ? S_OK : E_INVALIDARG;
+		if (SUCCEEDED(hr))
+		{
+			DWORD attributes = GetFileAttributes(shortcutPath);
+			bool fileExists = attributes < 0xFFFFFFF;
+
+			if (!fileExists)
+			{
+				hr = InstallShortcut(shortcutPath);
+			}
+			else
+			{
+				hr = S_FALSE;
+			}
+		}
+	}
+	return hr;
+}
+
+// Install the shortcut
+HRESULT win8Toast::InstallShortcut(_In_z_ wchar_t *shortcutPath)
+{
+
+	ComPtr<IShellLink> shellLink;
+	HRESULT hr = CoCreateInstance(CLSID_ShellLink, nullptr, CLSCTX_LOCAL_SERVER, IID_PPV_ARGS(&shellLink));
+
+	if (SUCCEEDED(hr))
+	{
+		hr = shellLink->SetPath(L"http://www.webinos.org");
+		if (SUCCEEDED(hr))
+		{
+			hr = shellLink->SetArguments(L"");
+			if (SUCCEEDED(hr))
+			{
+				ComPtr<IPropertyStore> propertyStore;
+
+				hr = shellLink.As(&propertyStore);
+				if (SUCCEEDED(hr))
+				{
+					PROPVARIANT appIdPropVar;
+					hr = InitPropVariantFromString(AppId, &appIdPropVar);
+					if (SUCCEEDED(hr))
+					{
+						hr = propertyStore->SetValue(PKEY_AppUserModel_ID, appIdPropVar);
+						if (SUCCEEDED(hr))
+						{
+							hr = propertyStore->Commit();
+							if (SUCCEEDED(hr))
+							{
+								ComPtr<IPersistFile> persistFile;
+								hr = shellLink.As(&persistFile);
+								if (SUCCEEDED(hr))
+								{
+									hr = persistFile->Save(shortcutPath, TRUE);
+								}
+							}
+						}
+						PropVariantClear(&appIdPropVar);
+					}
+				}
 			}
 		}
 	}

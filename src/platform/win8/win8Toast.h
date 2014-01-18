@@ -23,7 +23,12 @@
 #include <strsafe.h>
 #include <intsafe.h>
 
-// Notifications
+// WinRT
+#include <Psapi.h>
+#include <ShObjIdl.h>
+#include <propvarutil.h>
+#include <functiondiscoverykeys.h>
+//#include <roapi.h>
 #include <wrl\implements.h>
 #include <windows.ui.notifications.h>
 
@@ -43,6 +48,8 @@ public:
 	~win8Toast();
 	HRESULT DisplayToast(const wchar_t* title, const wchar_t* body);
 private:
+	HRESULT TryCreateShortcut();
+	HRESULT InstallShortcut(_In_z_ wchar_t *shortcutPath);
 	HRESULT CreateToastXml(
 		_In_ ABI::Windows::UI::Notifications::IToastNotificationManagerStatics *toastManager,
 		_Outptr_ ABI::Windows::Data::Xml::Dom::IXmlDocument **xml,

@@ -25,7 +25,8 @@
 					},
 					'link_settings': {
 						'libraries': [
-						  '-lruntimeobject.lib'
+						  '-lruntimeobject.lib',
+						  '-lShlwapi.lib'
 						],
 					},
                 }],
