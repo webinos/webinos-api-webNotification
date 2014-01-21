@@ -20,11 +20,8 @@
 
 win8Toast::win8Toast()
 {
-	RoInitialize(RO_INIT_SINGLETHREADED);
-	// Try to create the shortcut 
-	// that is required by winRT
-	// http://msdn.microsoft.com/en-us/library/windows/desktop/hh802762(v=vs.85).aspx
-	TryCreateShortcut(); //We don't care it if does exist
+	// Initialize wrt
+	RoInitialize(RO_INIT_MULTITHREADED);
 }
 
 
@@ -139,9 +136,10 @@ HRESULT win8Toast::CreateToast(_In_ IToastNotificationManagerStatics *toastManag
 // Included in this project is a wxs file that be used with the WiX toolkit
 // to make an installer that creates the necessary shortcut. One or the other should be used.
 
-HRESULT win8Toast::TryCreateShortcut()
+bool win8Toast::TryCreateShortcut()
 {
-	wchar_t shortcutPath[MAX_PATH];
+	RoInitialize(RO_INIT_MULTITHREADED);
+	wchar_t shortcutPath[MAX_PATH]=L"";
 	DWORD charWritten = GetEnvironmentVariable(L"APPDATA", shortcutPath, MAX_PATH);
 	HRESULT hr = charWritten > 0 ? S_OK : E_INVALIDARG;
 
@@ -164,13 +162,13 @@ HRESULT win8Toast::TryCreateShortcut()
 			}
 		}
 	}
-	return hr;
+	RoUninitialize();
+	return SUCCEEDED(hr);
 }
 
 // Install the shortcut
 HRESULT win8Toast::InstallShortcut(_In_z_ wchar_t *shortcutPath)
 {
-
 	ComPtr<IShellLink> shellLink;
 	HRESULT hr = CoCreateInstance(CLSID_ShellLink, nullptr, CLSCTX_LOCAL_SERVER, IID_PPV_ARGS(&shellLink));
 

@@ -27,6 +27,7 @@ using namespace std;
 class Notifications {
 public:
     static bool show(string, string, string, string, string, string);
+	static bool setup(); // Allow mechanism to do setup
 };
 
 #endif

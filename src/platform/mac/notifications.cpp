@@ -54,3 +54,7 @@ bool Notifications::show(string title, string body, string dir, string lang, str
 
     return YES;
 }
+
+bool Notifications::setup(){
+	return YES;
+}

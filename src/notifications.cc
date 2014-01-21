@@ -21,7 +21,7 @@
 
 using namespace v8;
 
-Handle<Value> Method(const Arguments& args) {
+Handle<Value> ShowMethod(const Arguments& args) {
   HandleScope scope;
   const unsigned resargc = 1;
   
@@ -59,9 +59,21 @@ Handle<Value> Method(const Arguments& args) {
   return scope.Close(True());
 }
 
+Handle<Value> SetupMethod(const Arguments& args) {
+	HandleScope scope;
+	if (Notifications::setup()){
+		return scope.Close(True());
+	}
+	else{
+		return scope.Close(False());
+	}
+}
+
 void init(Handle<Object> exports) {
   exports->Set(String::NewSymbol("show"),
-      FunctionTemplate::New(Method)->GetFunction());
+	  FunctionTemplate::New(ShowMethod)->GetFunction());
+  exports->Set(String::NewSymbol("setup"),
+	  FunctionTemplate::New(SetupMethod)->GetFunction());
 }
 
 NODE_MODULE(notifications, init)

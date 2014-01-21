@@ -47,9 +47,9 @@ public:
 	win8Toast();
 	~win8Toast();
 	bool DisplayToast(const wchar_t* title, const wchar_t* body, const wchar_t* icon);
+	bool static TryCreateShortcut();
 private:
-	HRESULT TryCreateShortcut();
-	HRESULT InstallShortcut(_In_z_ wchar_t *shortcutPath);
+	HRESULT static InstallShortcut(_In_z_ wchar_t *shortcutPath);
 	HRESULT CreateToastXml(
 		_In_ ABI::Windows::UI::Notifications::IToastNotificationManagerStatics *toastManager,
 		_Outptr_ ABI::Windows::Data::Xml::Dom::IXmlDocument **xml,

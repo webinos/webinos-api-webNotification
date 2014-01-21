@@ -19,11 +19,20 @@
 #include "win8Toast.h"
 
 bool Notifications::show(string title, string body, string dir, string lang, string tag, string icon) {
+	// If setup is not called, this won't show anything
 	// Convert to wchar
 	wstring titlews = wstring(title.begin(), title.end());
 	wstring bodyws = wstring(body.begin(), body.end());
 	wstring iconws = wstring(icon.begin(), icon.end());
 
+	// Create a toast and show it
 	win8Toast* toastService = new win8Toast();
 	return toastService->DisplayToast(titlews.c_str(), bodyws.c_str(), iconws.c_str());
+}
+
+bool Notifications::setup(){
+	// Try to create the shortcut 
+	// that is required by winRT
+	// http://msdn.microsoft.com/en-us/library/windows/desktop/hh802762(v=vs.85).aspx
+	return win8Toast::TryCreateShortcut();
 }
