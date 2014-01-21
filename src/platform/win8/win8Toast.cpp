@@ -16,6 +16,7 @@
 * Copyright 2014 Andreas Botsikas, NTUA
 ******************************************************************************/
 #include "win8Toast.h"
+#include "downloadImage.h"
 
 win8Toast::win8Toast()
 {
@@ -23,7 +24,7 @@ win8Toast::win8Toast()
 	// Try to create the shortcut 
 	// that is required by winRT
 	// http://msdn.microsoft.com/en-us/library/windows/desktop/hh802762(v=vs.85).aspx
-	TryCreateShortcut();
+	TryCreateShortcut(); //We don't care it if does exist
 }
 
 
@@ -54,6 +55,15 @@ HRESULT win8Toast::CreateToastXml(_In_ IToastNotificationManagerStatics *toastMa
 	const wchar_t* title, const wchar_t* body, const wchar_t* icon)
 {
 	HRESULT hr;
+	// If this is a web image, try to download it
+	if (wcslen(icon) > 0 && wcsncmp(icon, L"http", 4) == 0){
+		wchar_t downloadedImagePath[MAX_PATH]=L"";
+		// If we do manage to get the file
+		if (SUCCEEDED(downloadImage::GetImage(icon, downloadedImagePath))){
+			icon = downloadedImagePath; // Replace the icon with the local image
+		}
+	}
+
 	// Retrieve the template XML (One string of bold text on the first line, one string of regular text wrapped across the second and third lines.)
 	// See http://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.notifications.toasttemplatetype.Aspx
 	if (wcslen(icon) > 0 && wcsncmp(icon, L"http", 4) != 0){
@@ -67,6 +77,7 @@ HRESULT win8Toast::CreateToastXml(_In_ IToastNotificationManagerStatics *toastMa
 		}
 	}
 	else{
+
 		hr = toastManager->GetTemplateContent(ToastTemplateType_ToastText02, inputXml);
 	}
 	if (SUCCEEDED(hr))
@@ -186,6 +197,13 @@ HRESULT win8Toast::InstallShortcut(_In_z_ wchar_t *shortcutPath)
 							hr = propertyStore->Commit();
 							if (SUCCEEDED(hr))
 							{
+								// Try to download the webinos icon to set to the link
+								wchar_t downloadedImagePath[MAX_PATH] = L"";
+								// If we do manage to get the file
+								if (SUCCEEDED(downloadImage::GetImage(L"http://webinos.github.io/favicon.ico", downloadedImagePath))){
+									// Try to set it
+									shellLink->SetIconLocation(downloadedImagePath, 0);
+								}
 								ComPtr<IPersistFile> persistFile;
 								hr = shellLink.As(&persistFile);
 								if (SUCCEEDED(hr))
