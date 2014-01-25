@@ -71,3 +71,24 @@ Send a web notification to the bound service.
 - [Specifications](http://dev.webinos.org/specifications/api/notifications.html)
 - [Examples](https://github.com/webinos/webinos-api-webNotification/wiki/Examples)
 
+
+## Installation considerations ##
+
+You will need at least windows 8 to use the notifications. If you are attempting to build this api from source, you will need the [windows 8 sdk](http://msdn.microsoft.com/en-us/windows/desktop/hh852363.aspx). If you are using visual studio 2010, you will need to read [this stack overflow question](http://stackoverflow.com/questions/14760672/windows-8-sdk-platform-toolset-missing-in-visual-studio-2010). If you want to avoid opening visual studio, then edit the binding.gyp file and add the following sections in the windows configuration:
+
+	'include_dirs':[
+		'$(ProgramFiles)\Windows Kits\8.0\Include\um',
+		'$(ProgramFiles)\Windows Kits\8.0\Include\shared',
+		'$(ProgramFiles)\Windows Kits\8.0\Include\winrt',
+		'src',
+		'src\platform\win8'
+	],
+	'msvs_settings': {
+		'VCLinkerTool': {
+			'AdditionalLibraryDirectories': [
+				'$(ProgramFiles)\Windows Kits\8.0\Lib\win8\um\\$(PlatformShortName)'
+			]
+		}
+	}`
+
+Modifying the 8.0 to 8.1 depending on the installed sdk. You will also need to apply the [asyncinfo.h patch described here](http://www.chromium.org/developers/how-tos/build-instructions-windows#TOC-Setting-up-the-environment-for-building-with-Visual-C-2010-Express-or-Windows-7.1-SDK).
